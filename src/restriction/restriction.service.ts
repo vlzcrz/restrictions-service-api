@@ -16,7 +16,7 @@ export class RestrictionService {
     if (snapshot.empty) {
       throw new NotFoundException('No existen registros de documentos con la uuid_estudiante asociada');
     } else {
-      return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data(), date: doc.data().date.toDate() }))
+      return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data(), fecha_creacion: doc.data().date.toDate() }))
     }
   }
 
@@ -44,12 +44,16 @@ export class RestrictionService {
     const uuid_restriccion = uuid()
     const date = new Date()
     const docRef = this.firestore.collection("restrictions").doc(uuid_restriccion);
-    const restriction = {
+    const createRestriction = {
       ...createRestrictionDto,
       isActive: true,
-      date
+      fecha_creacion: date
     }
-    await docRef.set(restriction);
+    await docRef.set(createRestriction);
+    const restriction = {
+      uuid_restriccion: uuid_restriccion,
+      ...createRestriction
+    }
     return restriction
   }
 
@@ -77,7 +81,6 @@ export class RestrictionService {
       const updateData = {
         ...data,
         isActive: false,
-        date: data.date.toDate()
       }
       await checkRef.update(updateData)
       return updateData
