@@ -8,7 +8,7 @@ export class RestrictionController {
   constructor(private readonly restrictionService: RestrictionService) {}
 
   @Get('/:uuid_estudiante')
-  getRestriccion(@Param('uuid_estudiante') uuid_estudiante: string) {
+  getRestriccion(@Param('uuid_estudiante', ParseUUIDPipe) uuid_estudiante: string) {
     return this.restrictionService.getRestriccion(uuid_estudiante);
   }
 
